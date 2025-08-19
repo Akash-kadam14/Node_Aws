@@ -9,3 +9,5 @@ const UserRole = class USerRole {
 
 UserRole.SuperAdmin = 1;
 UserRole.NormalUser = 2;
+
+module.exports = UserRole;
