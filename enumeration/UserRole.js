@@ -1,5 +1,5 @@
 const UserRole = class USerRole {
-    getList () {
+    static getList () {
         return [
             UserRole.SuperAdmin,
             UserRole.NormalUser,

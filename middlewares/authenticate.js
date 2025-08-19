@@ -1,10 +1,13 @@
 const jwt =  require('jsonwebtoken');
 const HttpError = require('standard-http-error');
 const { jwt_secret } = process.env;
-const isAuthenticate = () => (req, res, next) => {
+
+const isAuthenticate = (req, res, next) => {
     try {
-        const token = req.headers?.authorization;
+       
+        let token = req.headers?.authorization;
         if(!token) throw new Error('token is required!');
+        token = token.replace('Bearer ', '')
         const decoded = jwt.verify(token, jwt_secret);
         if(!decoded)  throw new HttpError('401', 'Authentication failed');
         delete decoded.userAgent;
@@ -14,7 +17,7 @@ const isAuthenticate = () => (req, res, next) => {
         error.code = error.code || 400
         return res.status(error.code).json({
             code: error.code,
-            message: error.messsage,
+            message: error.message,
             error: true,
         })
     }

@@ -19,7 +19,7 @@ async function jwtSign(user) {
 }
 
 async function hash(password) {
-    const salt = await bcrypt.gensalt(10);
+    const salt = await bcrypt.genSalt(10);
     const hasedPassword = await bcrypt.hash(password, salt);
     return hasedPassword;
 }
