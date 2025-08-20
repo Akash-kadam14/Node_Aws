@@ -36,4 +36,13 @@ module.exports = class UserController extends BaseController {
             this.throwError(error);
         }
     }
+    async uploadFileToS3() {
+        try {
+            const result = await util.uploadFileToS3();
+            this.sendResponse(result);
+        } catch (error) {
+            console.error('Error occured in uploadFileToS3 of file UserController :: ', error);
+            this.throwError(error);
+        }
+    }
 }

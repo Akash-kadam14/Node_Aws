@@ -1,6 +1,6 @@
 const userModel = require('../model/userModel');
 const commonHelper = require('../helper/commonHelper');
-
+const { USER_BUCKET_NAME } = process.env;
 async function createUser(req) {
  try {
     const reqBody = req.body;
@@ -36,6 +36,19 @@ async function getSecrets() {
     }
 }
 
+async function uploadFileToS3(req) {
+    try {
+        const { userId } = req.authUser;
+        if(req.files && req.files.length > 0) {
+            for (eachFile of req.files) {
+                
+            }
+        }
+    } catch (error) {
+        console.error('Error occurred in getScrets of file awsUtil :: ', error);
+        throw error;
+    }
+}
 module.exports = {
     getSecrets,
     login,
