@@ -1,5 +1,6 @@
 const userModel = require('../model/userModel');
 const commonHelper = require('../helper/commonHelper');
+const {upload} = require('../helper/awsStorage');
 const { USER_BUCKET_NAME } = process.env;
 async function createUser(req) {
  try {
@@ -41,11 +42,16 @@ async function uploadFileToS3(req) {
         const { userId } = req.authUser;
         if(req.files && req.files.length > 0) {
             for (eachFile of req.files) {
-                
+                const fileName = eachFile.originalname;
+                const title = fileName[0].split(' ').join('_');
+                const generatedFileName = `Profile/${userId}_${title}_${fileName.at(-1)}`
+                const awsFileUrl = await upload(eachFile, generatedFileName, USER_BUCKET_NAME)
+                console.log('awsFileUrl', awsFileUrl);
             }
         }
+        return { message: 'file uploaded successfully'}
     } catch (error) {
-        console.error('Error occurred in getScrets of file awsUtil :: ', error);
+        console.error('Error occurred in uploadFileToS3 of file awsUtil :: ', error);
         throw error;
     }
 }
@@ -53,4 +59,5 @@ module.exports = {
     getSecrets,
     login,
     createUser,
+    uploadFileToS3
 }

@@ -31,6 +31,7 @@
     "mongoose": "^8.17.2",
     "mongoose-sequence": "^6.0.1",
     "multer": "^2.0.2",
+    "sharp": "^0.34.3",
     "standard-http-error": "^2.0.1"
   },
   "devDependencies": {

@@ -23,7 +23,7 @@ module.exports = class BaseController {
         let data = {};
 
         if(error!=null) {
-            let message = error.messsage || error.statusMessage;
+            let message = error.message || error.statusMessage;
             if(error.code === 11000) {
                 message = 'Email/Mobile/UserName already registered';
             }

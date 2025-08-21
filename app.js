@@ -2,14 +2,14 @@ require('dotenv').config();
 const { getSecrets } = require('./config/env.config');
 
 getSecrets().then(()=> {
-    // console.log(process.env);
+    console.log(process.env);
     const express = require('express');
     const mongoose = require('mongoose');
     const port = 8000;
     const app = express();
     const bodyParser = require('body-parser');
     const awsRoutes = require('./routes/routes');
-    const isAuthenticate = require('./middlewares/authenticate'); 
+
     mongoose.connect(`mongodb://127.0.0.1:27017/${process.env.databaseName}`).then (()=> {
     
     app.use(bodyParser.urlencoded({ extended: true, limit: '20mb'}));

@@ -30,9 +30,8 @@ async(req, res, next) => {
 });
 
 router.post('/uploadFileToS3', upload.any(), isAuthenticated, isAuthorize([UserRole.NormalUser]),
-
 async (req, res, next) => {
-    const file = new UserController();
+    const file = new UserController(req, res, next);
     file.uploadFileToS3();
 }
 )

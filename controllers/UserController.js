@@ -29,7 +29,7 @@ module.exports = class UserController extends BaseController {
     }
     async getSecrets() {
         try {
-            const result = await util.getSecrets();
+            const result = await util.getSecrets(this.req);
             this.sendResponse(result);
         } catch (error) {
             console.error('Error occured in getSecrtes of file UserController :: ', error);
@@ -38,7 +38,7 @@ module.exports = class UserController extends BaseController {
     }
     async uploadFileToS3() {
         try {
-            const result = await util.uploadFileToS3();
+            const result = await util.uploadFileToS3(this.req);
             this.sendResponse(result);
         } catch (error) {
             console.error('Error occured in uploadFileToS3 of file UserController :: ', error);
