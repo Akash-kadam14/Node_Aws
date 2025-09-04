@@ -34,6 +34,14 @@ async (req, res, next) => {
     const file = new UserController(req, res, next);
     file.uploadFileToS3();
 }
+);
+
+router.get('/getFileFromS3', isAuthenticated, isAuthorize([UserRole.NormalUser]),
+validator.queryData(schema.getFilesData),
+async (req, res, next) => {
+    const file = new UserController(req, res, next);
+    file.getFileFromS3();
+}
 )
 
 module.exports = router;

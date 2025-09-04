@@ -45,4 +45,13 @@ module.exports = class UserController extends BaseController {
             this.throwError(error);
         }
     }
+    async getFileFromS3() {
+        try {
+            const result = await util.getFileFromS3(this.req);
+            this.sendResponse(result);
+        } catch (error) {
+            console.error('Error occured in getFileFromS3 of file UserController :: ', error);
+            this.throwError(error);
+        }
+    }
 }

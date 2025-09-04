@@ -1,6 +1,6 @@
 const userModel = require('../model/userModel');
 const commonHelper = require('../helper/commonHelper');
-const {upload} = require('../helper/awsStorage');
+const {upload, getFile } = require('../helper/awsStorage');
 const { USER_BUCKET_NAME } = process.env;
 async function createUser(req) {
  try {
@@ -55,9 +55,23 @@ async function uploadFileToS3(req) {
         throw error;
     }
 }
+
+async function getFileFromS3(req) {
+    try {
+        const { key } = req.query;
+        console.log(key);
+        const getFileData = await getFile(key);
+        return getFileData
+    } catch (error) {
+        console.error('Error occurred in getFileFromS3 of file awsUtil :: ', error);
+        throw error;
+    }
+
+} 
 module.exports = {
     getSecrets,
     login,
     createUser,
-    uploadFileToS3
+    uploadFileToS3,
+    getFileFromS3
 }

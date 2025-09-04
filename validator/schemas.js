@@ -12,6 +12,9 @@ const schemas = {
         email: joi.string().email().required(),
         password: joi.string().required(),
     }),
+    getFilesData: joi.object({
+        key: joi.string().required(),
+    })
 }
 
 module.exports = schemas;

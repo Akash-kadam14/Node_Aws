@@ -2,12 +2,12 @@ const {
     S3Client,
     PutObjectCommand,
     GetObjectCommand,
-    ListObjectsV2Command,
-    DeleteObjectCommand
 } = require('@aws-sdk/client-s3');
+
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const sharp = require('sharp');
 
-const { region } = process.env;
+const { region, USER_BUCKET_NAME } = process.env;
 
 const s3client = new S3Client({ region });
 
@@ -76,6 +76,24 @@ async function upload(fileData, fileName, bucketName) {
  
 };
 
+async function getFile(key) {
+  try {
+    // set up the params for to uplaod file to s3
+    const params = {
+      Bucket: USER_BUCKET_NAME,
+      Key: key,
+    }
+    const command = new GetObjectCommand(params);
+    // Generate a signed URL valid for 1 hour
+    const url = await getSignedUrl(s3client, command, { expiresIn: 3600 });
+    return url;
+  } catch (error) {
+    console.log('error', error);
+    console.error('Error downloading in getFile of file awsStorage :: '. error);
+    throw error;
+  }
+}
 module.exports = {
     upload,
+    getFile
 }
