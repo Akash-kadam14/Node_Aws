@@ -1,6 +1,7 @@
 const userModel = require('../model/userModel');
 const commonHelper = require('../helper/commonHelper');
 const {upload, getFile } = require('../helper/awsStorage');
+const { sendEmailBySES } = require('../helper/awsEmailService');
 const { USER_BUCKET_NAME } = process.env;
 async function createUser(req) {
  try {
@@ -67,11 +68,23 @@ async function getFileFromS3(req) {
         throw error;
     }
 
-} 
+}
+
+async function sendEmail(req) {
+    try {
+        const { to, subject, message } = req.body;
+        const mailResponse = await sendEmailBySES(to, subject, message);
+        return mailResponse;
+    } catch (error) {
+        console.error('Error occurred in sendEmail of file awsUtil :: ', error);
+        throw error;
+    }
+}
 module.exports = {
     getSecrets,
     login,
     createUser,
     uploadFileToS3,
-    getFileFromS3
+    getFileFromS3,
+    sendEmail,
 }

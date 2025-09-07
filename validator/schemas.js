@@ -14,6 +14,11 @@ const schemas = {
     }),
     getFilesData: joi.object({
         key: joi.string().required(),
+    }),
+    sendEmail: joi.object({
+        to: joi.string().email().required(),
+        subject: joi.string().required(),
+        message: joi.string().required(),
     })
 }
 

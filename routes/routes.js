@@ -42,6 +42,15 @@ async (req, res, next) => {
     const file = new UserController(req, res, next);
     file.getFileFromS3();
 }
-)
+);
+
+router.post('/sendEmail',
+validator.bodyData(schema.sendEmail),
+async (req, res, next) => {
+    const mailService = new UserController(req, res, next);
+    mailService.sendEmail();
+}
+);
+
 
 module.exports = router;

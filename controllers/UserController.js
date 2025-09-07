@@ -54,4 +54,13 @@ module.exports = class UserController extends BaseController {
             this.throwError(error);
         }
     }
+    async sendEmail() {
+        try {
+            const result = await util.sendEmail(this.req);
+            this.sendResponse(result);
+        } catch (error) {
+            console.error('Error occured in sendEmail of file UserController :: ', error);
+            this.throwError(error);
+        }
+    }
 }
