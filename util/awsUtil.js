@@ -1,8 +1,8 @@
 const userModel = require('../model/userModel');
 const commonHelper = require('../helper/commonHelper');
 const {upload, getFile } = require('../helper/awsStorage');
-const { sendEmailBySES } = require('../helper/awsEmailService');
-const { USER_BUCKET_NAME } = process.env;
+const { sendEmailBySES, sendMessageToQueue } = require('../helper/awsServices');
+const { USER_BUCKET_NAME, sourceMail } = process.env;
 async function createUser(req) {
  try {
     const reqBody = req.body;
@@ -22,7 +22,17 @@ async function login(req) {
         const validatePassword = await commonHelper.comparePassword(password, getUser.password);
         if(!validatePassword) throw new Error('Invalid Password');
         const token = await commonHelper.jwtSign(getUser);
-        return token;
+        const subject  = 'Login Successful';
+        const message = `hi ${getUser.name } you logged in successfully! This mail is from Akash AWS service`
+        const messageBody = {
+            email,
+            subject,
+            message,
+            sourceMail
+        }
+        // const mailResponse = await sendEmailBySES(email, subject, message);
+        const sqsResponse = await sendMessageToQueue(messageBody);
+        return {token, sqsResponse};
     } catch (error) {
         console.error('Error occurred in login of file awsUtil :: ', error);
         throw error; 
