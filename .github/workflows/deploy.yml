@@ -1,0 +1,50 @@
+name: CI/CD to AWS ECR
+
+on:
+  push:
+    branches: ["master"] # runs when you push to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1 # change to your region
+
+      # Step 3: Login to Amazon ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Step 4: Build, tag, and push docker image to ECR
+      - name: Build, Tag, Push Docker image
+        run: |
+          IMAGE_REPO_NAME=${{ secrets.ECR_REPO_NAME }}
+          IMAGE_TAG=latest
+
+          docker build -t $IMAGE_REPO_NAME .
+          docker tag $IMAGE_REPO_NAME:$IMAGE_TAG ${{ secrets.ECR_REPO_URI }}:$IMAGE_TAG
+          docker push ${{ secrets.ECR_REPO_URI }}:$IMAGE_TAG
+
+      # Step 5: Deploy on EC2
+      - name: Deploy on EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          username: ubuntu # if Ubuntu, use 'ubuntu'; for Amazon Linux use 'ec2-user'
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.ECR_REPO_URI }}:latest
+            docker stop myapp || true
+            docker rm myapp || true
+            docker run -d --name myapp -p 8000:8000 ${{ secrets.ECR_REPO_URI }}:latest
