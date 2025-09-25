@@ -90,7 +90,6 @@ async function sendEmail(req) {
         throw error;
     }
 }
-
 module.exports = {
     getSecrets,
     login,
